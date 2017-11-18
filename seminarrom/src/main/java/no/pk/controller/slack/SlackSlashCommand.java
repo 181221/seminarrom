@@ -1,4 +1,4 @@
-package no.pk.slack;
+package no.pk.controller.slack;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

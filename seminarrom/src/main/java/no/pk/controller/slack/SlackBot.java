@@ -1,4 +1,4 @@
-package no.pk.slack;
+package no.pk.controller.slack;
 
 import no.pk.bot.Bot;
 import no.pk.bot.Controller;
@@ -53,7 +53,7 @@ public class SlackBot extends Bot {
      */
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE})
     public void onReceiveDM(WebSocketSession session, Event event) {
-        reply(session, event, new Message("Hi, I am " + slackService.getCurrentUser().getName()));
+        reply(session, event, new Message("Hei, jeg heter " + slackService.getCurrentUser().getName()));
     }
 
     /**
