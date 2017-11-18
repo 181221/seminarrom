@@ -31,8 +31,8 @@ public class Scraper {
         WebElement login = driver.findElement(By.className("submit"));
         WebElement username = driver.findElement(By.id("username"));
         WebElement pw = driver.findElement(By.id("password"));
-        username.sendKeys(System.getenv("FEIDE_B"));
-        pw.sendKeys(System.getenv("FEIDE_P"));
+        username.sendKeys(System.getenv("FEIDE_BRUKER"));
+        pw.sendKeys(System.getenv("FEIDE_PW"));
 
         // login og submit
         login.submit();

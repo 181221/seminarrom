@@ -1,9 +1,9 @@
 package no.pk.model;
 
 public class Mail {
-    public static final String FRAMAIL = System.getenv("MAIL_B");
-    public static final String PASSORD = System.getenv("MAIL_P");
-    public static final String TILMAIL = System.getenv("MAIL_T");
+    public static final String FRAMAIL = System.getenv("MAIL_FRA");
+    public static final String PASSORD = System.getenv("MAIL_PW");
+    public static final String TILMAIL = System.getenv("MAIL_TIL");
 
     private String til;
     private String msg;
