@@ -5,13 +5,22 @@ import no.pk.bot.Controller;
 import no.pk.bot.EventType;
 import no.pk.bot.models.Event;
 import no.pk.bot.models.Message;
+import no.pk.util.RomUtil;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
+
+import static no.pk.util.CsvReaderUtil.readCSVInternett;
 
 /**
  * A Slack Bot sample. You can create multiple bots by just
@@ -23,6 +32,9 @@ import java.util.regex.Matcher;
 @Component
 public class SlackBot extends Bot {
 
+    private static final String ALLESEMINAR = "https://no.timeedit.net/web/hib/db1/service/ri1AY6YYcnd8v5QYwYQrxgb1ZxgYxm98KaYravr5jY5awSadjc8vm5ZQ0Q522x60Yy5505YgX6g5Z5252Yg.html";
+    private static final String LOGIN_FEIDE = "https://idp.feide.no/simplesaml/module.php/feide/login.php?asLen=196&AuthState=_9fca4163f7ea1def117e4e14f389d3a338a30db096%3Ahttps%3A%2F%2Fidp.feide.no%2Fsimplesaml%2Fsaml2%2Fidp%2FSSOService.php%3Fspentityid%3Durn%253Amace%253Afeide.no%253Aservices%253Ase.timeedit.hib%26cookieTime%3D1510783130%26RelayState%3D";
+    private static final String DRIVER_LOKAL = System.getenv("DRIVER_LOKAL");
     private static final Logger logger = LoggerFactory.getLogger(SlackBot.class);
 
     /**
@@ -53,7 +65,7 @@ public class SlackBot extends Bot {
      */
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE})
     public void onReceiveDM(WebSocketSession session, Event event) {
-        reply(session, event, new Message("Hei, jeg heter " + slackService.getCurrentUser().getName()));
+        reply(session, event, new Message("Hei, jeg heter " + slackService.getCurrentUser().getName() + ", hva kan jeg hjelpe deg med?"));
     }
 
     /**
@@ -80,7 +92,7 @@ public class SlackBot extends Bot {
      */
     @Controller(events = EventType.PIN_ADDED)
     public void onPinAdded(WebSocketSession session, Event event) {
-        reply(session, event, new Message("Thanks for the pin! You can find all pinned items under channel details."));
+        reply(session, event, new Message("Takk for at du merket innlegget, du finner alle merkede innlegg under detaljer på channelen."));
     }
 
     /**
@@ -95,68 +107,71 @@ public class SlackBot extends Bot {
      */
     @Controller(events = EventType.FILE_SHARED)
     public void onFileShared(WebSocketSession session, Event event) {
-        logger.info("File shared: {}", event);
+        logger.info("Fil delt: {}", event);
     }
 
-
     /**
-     * Conversation feature of JBot. This method is the starting point of the conversation (as it
-     * calls {@link Bot#startConversation(Event, String)} within it. You can chain methods which will be invoked
-     * one after the other leading to a conversation. You can chain methods with {@link Controller#next()} by
-     * specifying the method name to chain with.
+     * Starter samtalen med Slack boten
      *
      * @param session
      * @param event
      */
-    @Controller(pattern = "(setup meeting)", next = "confirmTiming")
-    public void setupMeeting(WebSocketSession session, Event event) {
-        startConversation(event, "confirmTiming");   // start conversation
-        reply(session, event, new Message("Cool! At what time (ex. 15:30) do you want me to set up the meeting?"));
+    @Controller(pattern = "(finn seminar)", next = "finnDag")
+    public void settOppLedigeSeminarRom(WebSocketSession session, Event event) {
+        startConversation(event, "finnLedigeSeminarRom");
+        reply(session, event, new Message("Hallaien, hvilken dag ønsker du å finne ledig rom på?"));
     }
 
-    /**
-     * This method is chained with {@link SlackBot#setupMeeting(WebSocketSession, Event)}.
-     *
-     * @param session
-     * @param event
-     */
-    @Controller(next = "askTimeForMeeting")
-    public void confirmTiming(WebSocketSession session, Event event) {
-        reply(session, event, new Message("Your meeting is set at " + event.getText() +
-                ". Would you like to repeat it tomorrow?"));
-        nextConversation(event);    // jump to next question in conversation
-    }
-
-    /**
-     * This method is chained with {@link SlackBot#confirmTiming(WebSocketSession, Event)}.
-     *
-     * @param session
-     * @param event
-     */
-    @Controller(next = "askWhetherToRepeat")
-    public void askTimeForMeeting(WebSocketSession session, Event event) {
-        if (event.getText().contains("yes")) {
-            reply(session, event, new Message("Okay. Would you like me to set a reminder for you?"));
-            nextConversation(event);    // jump to next question in conversation  
+    @Controller(next = "finnLedigeSeminarRom")
+    public void finnDag(WebSocketSession session, Event event) {
+        if (event.getText().equals("idag")) {
+            reply(session, event, new Message("Bare ett øyeblikk så skal jeg sjekke!"));
+            nextConversation(event);
         } else {
-            reply(session, event, new Message("No problem. You can always schedule one with 'setup meeting' command."));
-            stopConversation(event);    // stop conversation only if user says no
+            reply(session, event, new Message("Beklager, @Peder har ikke implementert søk for andre dager enda.."));
+            stopConversation(event);
         }
     }
 
-    /**
-     * This method is chained with {@link SlackBot#askTimeForMeeting(WebSocketSession, Event)}.
-     *
-     * @param session
-     * @param event
-     */
     @Controller
-    public void askWhetherToRepeat(WebSocketSession session, Event event) {
-        if (event.getText().contains("yes")) {
-            reply(session, event, new Message("Great! I will remind you tomorrow before the meeting."));
-        } else {
-            reply(session, event, new Message("Oh! my boss is smart enough to remind himself :)"));
+    public void finnLedigeSeminarRom(WebSocketSession session, Event event) throws IOException {
+        // setup driver.
+        WebDriver driver = setUpDriver();
+        driver.navigate().to(LOGIN_FEIDE);
+
+        // manipuler dom
+        WebElement login = driver.findElement(By.className("submit"));
+        WebElement username = driver.findElement(By.id("username"));
+        WebElement pw = driver.findElement(By.id("password"));
+        username.sendKeys(System.getenv("FEIDE_BRUKER").toString());
+        pw.sendKeys(System.getenv("FEIDE_PW").toString());
+
+        // login og submit
+        login.submit();
+        driver.navigate().to(ALLESEMINAR);
+        int teller = 0;
+        int max = 10;
+        while (true) {
+            try {
+                readCSVInternett(ALLESEMINAR);
+                break;
+            } catch (IOException e) {
+                if (++teller == max) throw e;
+            } finally {
+                driver.quit();
+            }
         }
-        stopConversation(event);    // stop conversation
+
+        // Skriv melding
+        String msg = RomUtil.lagMsg();
+        reply(session, event, new Message(RomUtil.LedigNaa()));
+        stopConversation(event);
+    }
+
+    private static WebDriver setUpDriver() {
+        System.setProperty("webdriver.chrome.driver", DRIVER_LOKAL);
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--headless --whitelisted-ips=\"\"");
+        return new ChromeDriver(chromeOptions);
     }
 }
