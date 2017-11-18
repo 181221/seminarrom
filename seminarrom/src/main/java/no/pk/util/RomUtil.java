@@ -1,15 +1,35 @@
 package no.pk.util;
 
-
-
 import no.pk.model.Hendelse;
 import no.pk.model.Rom;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Date;
 import static no.pk.util.ReaderHjelp.allerom;
 
 public class RomUtil {
+
+    public static ArrayList<String> ledigerom = new ArrayList<>();
+    public static ArrayList<Hendelse> ledigehendelser = new ArrayList<>();
+
+    public static String LedigNaa() {
+        int naa = hentTime();
+        boolean funnet = false;
+        String rommet = "Ingen ledige nå";
+        for (int i = 0; i < ledigehendelser.size() - 1 && !funnet; i++) {
+            Hendelse h = ledigehendelser.get(i);
+            int timen = Integer.parseInt(h.getSlutt().toString().substring(0, 2));
+            if (naa == timen) {
+                rommet = "ledig nå: " + h.getRom();
+                funnet = true;
+            } else if ((timen - naa) == 1) {
+                rommet = h.getRom() + " ledig fra: " + " " + h.getSlutt() + " Til: " + ledigehendelser.get(i + 1).getSlutt();
+                funnet = true;
+            }
+        }
+        return rommet;
+    }
 
     public static void printUtRomOgHendelse() {
         for (Rom r : allerom) {
@@ -21,9 +41,8 @@ public class RomUtil {
         }
     }
 
-    private static ArrayList<String> finnLedig() {
+    public static ArrayList<String> finnAlleLedige() {
         String ledige;
-        ArrayList<String> ledigerom = new ArrayList<>();
         for (int i = 0; i < allerom.size(); i++) {
             Rom r = allerom.get(i);
             int lengde = r.getHendelser().size();
@@ -33,10 +52,17 @@ public class RomUtil {
                 if (erLedig(h, h1)) {
                     ledige = "Rom: " + r.getNavn() + " Er ledig fra: " + h.getSlutt() + " til: " + h1.getStart();
                     ledigerom.add(ledige);
+                    ledigehendelser.add(h);
                 }
             }
         }
         return ledigerom;
+    }
+
+    private static int hentTime() {
+        DateFormat dateFormat = new SimpleDateFormat("HH");
+        Date date = new Date();
+        return Integer.parseInt(dateFormat.format(date));
     }
 
     private static boolean erLedig(Hendelse h, Hendelse h1) {
@@ -48,7 +74,7 @@ public class RomUtil {
 
     public static String lagMsg() {
         StringBuilder sb = new StringBuilder();
-        for (String s : finnLedig()) {
+        for (String s : finnAlleLedige()) {
             sb.append(s);
             sb.append("\n");
         }

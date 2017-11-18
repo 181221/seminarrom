@@ -12,6 +12,7 @@ import java.io.IOException;
 import static no.pk.model.Mail.TILMAIL;
 import static no.pk.util.CsvReaderUtil.readCSVInternett;
 import static no.pk.util.MailUtil.setUpMail;
+import static no.pk.util.RomUtil.LedigNaa;
 
 
 public class Scraper {
@@ -38,7 +39,11 @@ public class Scraper {
         driver.navigate().to(ALLESEMINAR);
         readCSVInternett(ALLESEMINAR);
         driver.quit();
-        setUpMail(TILMAIL, RomUtil.lagMsg(), SUBJECT_LEDIGE_ROM);
+
+        // send sms og mail.
+        String msg = RomUtil.lagMsg();
+        setUpMail(TILMAIL, msg, SUBJECT_LEDIGE_ROM);
+        TwilioSMS.SendSMS(LedigNaa());
     }
 
     private static WebDriver setUpDriver() {
