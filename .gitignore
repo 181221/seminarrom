@@ -87,3 +87,5 @@ local.properties
 
 # Visual Studio
 .vscode
+
+lib/
