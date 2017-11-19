@@ -13,11 +13,10 @@ import java.util.ArrayList;
 public class CsvReaderUtil {
     public static void readCSVInternett(String urlen) throws IOException {
         ArrayList<Rom> allerom = new ArrayList<>();
-        String URL = "https://no.timeedit.net/web/hib/db1/service/ri1AY6YYcnd8v5QYwYQrxgb1ZxgYxm98KaYravr5jY5awSadjc8vm5ZQ0Q522x60Yy5505YgX6g5Z5252Yg.html";
-        if (URL.contains(".html")) {
-            URL = URL.replace("html", "csv");
+        if (urlen.contains(".html")) {
+            urlen = urlen.replace("html", "csv");
         }
-        java.net.URL url = new URL(URL);
+        java.net.URL url = new URL(urlen);
         System.out.println(url.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try {
@@ -31,7 +30,6 @@ public class CsvReaderUtil {
                 while ((line = br.readLine()) != null && !line.isEmpty()) {
                     fieldsene = line.split(",");
                     reader.setOppData(fieldsene);
-
                 }
                 br.close();
             } else {

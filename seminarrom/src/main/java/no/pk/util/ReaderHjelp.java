@@ -6,7 +6,7 @@ import no.pk.model.Rom;
 import java.util.ArrayList;
 
 public class ReaderHjelp {
-    public static ArrayList<Rom> allerom;
+    private ArrayList<Rom> allerom;
 
     public ReaderHjelp() {
         allerom = new ArrayList<>();
