@@ -21,7 +21,7 @@ public class Scraper {
     public Scraper () {
         driver = setUpDriver();
     }
-    private void loggInnFeide() {
+    public void loggInnFeide() {
         driver.navigate().to(LOGIN_FEIDE);
         WebElement login = driver.findElement(By.className("submit"));
         WebElement username = driver.findElement(By.id("username"));
@@ -30,7 +30,7 @@ public class Scraper {
         pw.sendKeys(System.getenv("FEIDE_PW").toString());
         login.submit();
     }
-    private void avsluttDriver() {
+    public void avsluttDriver() {
         driver.quit();
     }
     private static WebDriver setUpDriver() {
