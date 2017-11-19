@@ -5,6 +5,7 @@ import no.pk.bot.Controller;
 import no.pk.bot.EventType;
 import no.pk.bot.models.Event;
 import no.pk.bot.models.Message;
+import no.pk.controller.Scraper;
 import no.pk.util.RomUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -133,21 +134,14 @@ public class SlackBot extends Bot {
         }
     }
 
+
+    public void avsluttDriver(WebDriver driver) {
+        driver.quit();
+    }
+
     @Controller
     public void finnLedigeSeminarRom(WebSocketSession session, Event event) throws IOException {
-        // setup driver.
-        WebDriver driver = setUpDriver();
-        driver.navigate().to(LOGIN_FEIDE);
-
-        // manipuler dom
-        WebElement login = driver.findElement(By.className("submit"));
-        WebElement username = driver.findElement(By.id("username"));
-        WebElement pw = driver.findElement(By.id("password"));
-        username.sendKeys(System.getenv("FEIDE_BRUKER").toString());
-        pw.sendKeys(System.getenv("FEIDE_PW").toString());
-
-        // login og submit
-        login.submit();
+        WebDriver driver = new Scraper().getDriver();
         driver.navigate().to(ALLESEMINAR);
         int teller = 0;
         int max = 10;
@@ -158,7 +152,7 @@ public class SlackBot extends Bot {
             } catch (IOException e) {
                 if (++teller == max) throw e;
             } finally {
-                driver.quit();
+                avsluttDriver(driver);
             }
         }
 
