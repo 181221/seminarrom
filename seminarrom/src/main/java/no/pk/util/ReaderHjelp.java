@@ -109,10 +109,22 @@ public class ReaderHjelp {
      * Lager en string over alle ledige rom.
      * @return
      */
-    public String lagMsg() {
+    public String lagMsgFinnLedige() {
         StringBuilder sb = new StringBuilder();
         for (String s : finnAlleLedige()) {
             sb.append(s);
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+    /**
+     * Lager en string over alle ledige rom.
+     * @return
+     */
+    public String lagMsgFinnAlleRom() {
+        StringBuilder sb = new StringBuilder();
+        for (Rom r : allerom) {
+            sb.append(r.getNavn());
             sb.append("\n");
         }
         return sb.toString();

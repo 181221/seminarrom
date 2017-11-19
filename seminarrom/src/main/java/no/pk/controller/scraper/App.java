@@ -27,10 +27,10 @@ public class App {
                 melding = reader.LedigNaa();
                 break;
             case Verdi.LEDIGE:
-                melding = Arrays.toString(new ArrayList[]{reader.getLedigerom()});
+                melding = reader.lagMsgFinnLedige();
                 break;
             case Verdi.ALLEROM:
-                melding = Arrays.toString(new ArrayList[]{reader.getAllerom()});
+                melding = reader.lagMsgFinnAlleRom();
                 break;
             default:
                 melding = "Skriv inn en av tre flølgene kommandoer: \"ledignaa\" \"ledige\" \"allerom\"";

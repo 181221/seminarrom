@@ -121,11 +121,11 @@ public class SlackBot extends Bot {
         reply(session, event, new Message("Hallaien, hvilken dag ønsker du å finne ledig rom på?"));
     }
 
-    @Controller()
+    @Controller(next = "hentData")
     public void finnDag(WebSocketSession session, Event event) throws IOException {
         if (event.getText().contains("idag")) {
             reply(session, event, new Message("Bare ett øyeblikk så skal jeg sjekke!"));
-            String melding = App.hentLedigDagensSeminarogAuditorieRom(Verdi.ALLEROM);
+            String melding = App.hentLedigDagensSeminarogAuditorieRom(Verdi.LEDIGE);
             App.sendViaPushbullet(melding);
             reply(session, event, new Message(melding));
         } else {
