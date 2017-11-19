@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -30,12 +31,16 @@ public class CsvReaderUtil {
         post.setEntity(new UrlEncodedFormEntity(postFields, HTTP.UTF_8));
 
         response = client.execute(post);
-        String URL = "https://no.timeedit.net/web/hib/db1/student/ri1GZ68Yyga7YYQY5bQ9xmZ1ZQgjnd8cxa0yKYx5YY6a0YgvQy5w655560W66525200.html";
+        EntityUtils.consumeQuietly(response.getEntity());
+        String URL = "https://no.timeedit.net/web/hib/db1/student/ri1GZ68Yyga7YYQY5bQ9xmZ1ZQgjnd8cxa0yKYx5YY6a0YgvQy5w655560W66525200.csv";
         HttpGet get = new HttpGet(URL);
         response = client.execute(get);
         HttpEntity entity = response.getEntity();
         InputStream in = entity.getContent();
         System.out.println(in.read());
+
+        in.close();
+        EntityUtils.consumeQuietly(response.getEntity());
     }
 
     public static ReaderHjelp readCSVInternett(String urlen) throws IOException {
