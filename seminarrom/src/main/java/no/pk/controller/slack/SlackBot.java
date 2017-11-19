@@ -7,11 +7,7 @@ import no.pk.bot.models.Event;
 import no.pk.bot.models.Message;
 import no.pk.controller.Scraper;
 import no.pk.util.RomUtil;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +30,6 @@ import static no.pk.util.CsvReaderUtil.readCSVInternett;
 public class SlackBot extends Bot {
 
     private static final String ALLESEMINAR = "https://no.timeedit.net/web/hib/db1/service/ri1AY6YYcnd8v5QYwYQrxgb1ZxgYxm98KaYravr5jY5awSadjc8vm5ZQ0Q522x60Yy5505YgX6g5Z5252Yg.html";
-    private static final String LOGIN_FEIDE = "https://idp.feide.no/simplesaml/module.php/feide/login.php?asLen=196&AuthState=_9fca4163f7ea1def117e4e14f389d3a338a30db096%3Ahttps%3A%2F%2Fidp.feide.no%2Fsimplesaml%2Fsaml2%2Fidp%2FSSOService.php%3Fspentityid%3Durn%253Amace%253Afeide.no%253Aservices%253Ase.timeedit.hib%26cookieTime%3D1510783130%26RelayState%3D";
-    private static final String DRIVER_LOKAL = System.getenv("DRIVER_LOKAL");
     private static final Logger logger = LoggerFactory.getLogger(SlackBot.class);
 
     /**
@@ -123,25 +117,21 @@ public class SlackBot extends Bot {
         reply(session, event, new Message("Hallaien, hvilken dag ønsker du å finne ledig rom på?"));
     }
 
-    @Controller(next = "finnLedigeSeminarRom")
-    public void finnDag(WebSocketSession session, Event event) {
+    @Controller()
+    public void finnDag(WebSocketSession session, Event event) throws IOException {
         if (event.getText().contains("idag")) {
-            nextConversation(event);
             reply(session, event, new Message("Bare ett øyeblikk så skal jeg sjekke!"));
+            finnLedigeSeminarRom(session, event);
         } else {
-            stopConversation(event);
             reply(session, event, new Message("Beklager, @Peder har ikke implementert søk for andre dager enda.."));
         }
+        stopConversation(event);
     }
 
-
-    public void avsluttDriver(WebDriver driver) {
-        driver.quit();
-    }
-
-    @Controller
-    public void finnLedigeSeminarRom(WebSocketSession session, Event event) throws IOException {
-        WebDriver driver = new Scraper().getDriver();
+    private void finnLedigeSeminarRom(WebSocketSession session, Event event) throws IOException {
+        Scraper scraper = new Scraper();
+        scraper.loggInnFeide();
+        WebDriver driver = scraper.getDriver();
         driver.navigate().to(ALLESEMINAR);
         int teller = 0;
         int max = 10;
@@ -152,13 +142,11 @@ public class SlackBot extends Bot {
             } catch (IOException e) {
                 if (++teller == max) throw e;
             } finally {
-                avsluttDriver(driver);
+                scraper.avsluttDriver();
             }
         }
-
         // Skriv melding
         String msg = RomUtil.lagMsg();
         reply(session, event, new Message(RomUtil.LedigNaa()));
-        stopConversation(event);
     }
 }
