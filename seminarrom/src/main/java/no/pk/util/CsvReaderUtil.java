@@ -62,9 +62,8 @@ public class CsvReaderUtil {
             if (connection.getResponseCode() == 200) {
                 InputStreamReader streamReader = new InputStreamReader(connection.getInputStream());
                 BufferedReader br = new BufferedReader(streamReader);
-                String line = br.readLine();
-                line = br.readLine() + br.readLine() + br.readLine();
-                String[] fieldsene = line.split(",");
+                String line = br.readLine() + br.readLine() + br.readLine() + br.readLine();
+                String[] fieldsene;
                 reader = new ReaderHjelp();
                 while ((line = br.readLine()) != null && !line.isEmpty()) {
                     fieldsene = line.split(",");
