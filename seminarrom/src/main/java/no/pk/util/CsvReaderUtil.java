@@ -26,7 +26,7 @@ public class CsvReaderUtil {
         HttpResponse response = null;
         List<NameValuePair> postFields = new ArrayList<NameValuePair>(2);
 
-        postFields.add(new BasicNameValuePair("username", System.getenv("FEIDE_BRUKER")));
+        postFields.add(new BasicNameValuePair("feidename", System.getenv("FEIDE_BRUKER")));
         postFields.add(new BasicNameValuePair("password", System.getenv("FEIDE_PW")));
         post.setEntity(new UrlEncodedFormEntity(postFields, HTTP.UTF_8));
 
