@@ -6,6 +6,7 @@ import no.pk.bot.EventType;
 import no.pk.bot.models.Event;
 import no.pk.bot.models.Message;
 import no.pk.controller.Scraper;
+import no.pk.controller.attributter.Lenker;
 import no.pk.util.RomUtil;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -29,7 +30,6 @@ import static no.pk.util.CsvReaderUtil.readCSVInternett;
 @Component
 public class SlackBot extends Bot {
 
-    private static final String ALLESEMINAR = "https://no.timeedit.net/web/hib/db1/service/ri1AY6YYcnd8v5QYwYQrxgb1ZxgYxm98KaYravr5jY5awSadjc8vm5ZQ0Q522x60Yy5505YgX6g5Z5252Yg.html";
     private static final Logger logger = LoggerFactory.getLogger(SlackBot.class);
 
     /**
@@ -132,12 +132,12 @@ public class SlackBot extends Bot {
         Scraper scraper = new Scraper();
         scraper.loggInnFeide();
         WebDriver driver = scraper.getDriver();
-        driver.navigate().to(ALLESEMINAR);
+        driver.navigate().to(Lenker.ALLESEMINAR);
         int teller = 0;
         int max = 10;
         while (true) {
             try {
-                readCSVInternett(ALLESEMINAR);
+                readCSVInternett(Lenker.ALLESEMINAR);
                 break;
             } catch (IOException e) {
                 if (++teller == max) throw e;
@@ -149,4 +149,5 @@ public class SlackBot extends Bot {
         String msg = RomUtil.lagMsg();
         reply(session, event, new Message(RomUtil.LedigNaa()));
     }
+
 }

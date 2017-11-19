@@ -11,13 +11,13 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class CsvReaderUtil {
-    public static void readCSVInternett(String urlen) throws IOException {
-        ArrayList<Rom> allerom = new ArrayList<>();
+    public static ReaderHjelp readCSVInternett(String urlen) throws IOException {
         if (urlen.contains(".html")) {
             urlen = urlen.replace("html", "csv");
         }
         java.net.URL url = new URL(urlen);
         System.out.println(url.toString());
+        ReaderHjelp reader = null;
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try {
             if (connection.getResponseCode() == 200) {
@@ -26,7 +26,7 @@ public class CsvReaderUtil {
                 String line = br.readLine();
                 line = br.readLine() + br.readLine() + br.readLine();
                 String[] fieldsene = line.split(",");
-                ReaderHjelp reader = new ReaderHjelp();
+                reader = new ReaderHjelp();
                 while ((line = br.readLine()) != null && !line.isEmpty()) {
                     fieldsene = line.split(",");
                     reader.setOppData(fieldsene);
@@ -38,6 +38,6 @@ public class CsvReaderUtil {
         } catch (MalformedURLException e) {
             System.out.println(e);
         }
-
+        return reader;
     }
 }
