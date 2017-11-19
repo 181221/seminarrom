@@ -236,7 +236,7 @@ public class PushbulletClient {
             post.setEntity(builder.build());
 
             response = client.execute(post);
-            logger.info("Status: {}", response.getStatusLine());
+            logger.info("Type: {}", response.getStatusLine());
         } catch (IOException e) {
             logger.error("While posting file", e);
         }
@@ -323,7 +323,7 @@ public class PushbulletClient {
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
             HttpResponse response = client.execute(post);
 
-            logger.info("Status: {}", response.getStatusLine());
+            logger.info("Type: {}", response.getStatusLine());
             result = collectResponse(response);
         } catch (IOException e) {
             logger.error("While posting", e);
@@ -348,7 +348,7 @@ public class PushbulletClient {
         HttpGet get = new HttpGet(path);
         String result = null;
         try (CloseableHttpResponse response = client.execute(get)) {
-            logger.info("Status: {}", response.getStatusLine());
+            logger.info("Type: {}", response.getStatusLine());
             result = collectResponse(response);
         } catch (ClientProtocolException e) {
             logger.error("While getting", e);
@@ -363,7 +363,7 @@ public class PushbulletClient {
         String result = null;
         try {
             HttpResponse response = client.execute(delete);
-            logger.info("Status: {}", response.getStatusLine());
+            logger.info("Type: {}", response.getStatusLine());
             result = collectResponse(response);
         } catch (IOException e) {
             logger.error("While getting", e);

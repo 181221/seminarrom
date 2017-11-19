@@ -141,7 +141,7 @@ public abstract class Bot {
      * @see WebSocketHandler#afterConnectionClosed
      */
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        logger.debug("WebSocket closed: {}, Close Status: {}", session, status.toString());
+        logger.debug("WebSocket closed: {}, Close Type: {}", session, status.toString());
     }
 
     /**

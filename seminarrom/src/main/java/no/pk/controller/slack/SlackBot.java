@@ -7,6 +7,7 @@ import no.pk.bot.models.Event;
 import no.pk.bot.models.Message;
 import no.pk.controller.Scraper;
 import no.pk.controller.attributter.Lenker;
+import no.pk.controller.attributter.Verdi;
 import no.pk.controller.scraper.App;
 import no.pk.model.Rom;
 import no.pk.util.RomUtil;
@@ -124,7 +125,7 @@ public class SlackBot extends Bot {
     public void finnDag(WebSocketSession session, Event event) throws IOException {
         if (event.getText().contains("idag")) {
             reply(session, event, new Message("Bare ett øyeblikk så skal jeg sjekke!"));
-            String melding = App.hentDagensSeminarogAuditorieRom();
+            String melding = App.hentLedigDagensSeminarogAuditorieRom(Verdi.ALLEROM);
             App.sendViaPushbullet(melding);
             reply(session, event, new Message(melding));
         } else {
