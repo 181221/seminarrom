@@ -7,6 +7,7 @@ import no.pk.bot.models.Event;
 import no.pk.bot.models.Message;
 import no.pk.controller.Scraper;
 import no.pk.controller.attributter.Lenker;
+import no.pk.model.Rom;
 import no.pk.util.RomUtil;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 
 import static no.pk.util.CsvReaderUtil.readCSVInternett;
@@ -133,11 +135,12 @@ public class SlackBot extends Bot {
         scraper.loggInnFeide();
         WebDriver driver = scraper.getDriver();
         driver.navigate().to(Lenker.ALLESEMINAR);
+        ArrayList<Rom> allerom = null;
         int teller = 0;
         int max = 10;
         while (true) {
             try {
-                readCSVInternett(Lenker.ALLESEMINAR);
+                allerom = readCSVInternett(Lenker.ALLESEMINAR).getAllerom();
                 break;
             } catch (IOException e) {
                 if (++teller == max) throw e;
@@ -146,8 +149,8 @@ public class SlackBot extends Bot {
             }
         }
         // Skriv melding
-        String msg = RomUtil.lagMsg();
-        reply(session, event, new Message(RomUtil.LedigNaa()));
+        /*String msg = RomUtil.lagMsg(allerom);
+        reply(session, event, new Message(RomUtil.LedigNaa()));*/
     }
 
 }

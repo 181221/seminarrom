@@ -33,8 +33,8 @@ public class PushBullet {
         scraper.avsluttDriver();
 
         // Skriv melding
-        String msg = RomUtil.lagMsg();
-        String body = RomUtil.LedigNaa();
+       /* String msg = RomUtil.lagMsg();*/
+        String body = "LOL";
         String title = "Seminarrom";
         client.sendNotePush(title, body);
 

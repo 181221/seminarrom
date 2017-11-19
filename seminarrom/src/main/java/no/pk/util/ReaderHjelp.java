@@ -9,6 +9,9 @@ public class ReaderHjelp {
     private ArrayList<String> ledigerom;
     private ArrayList<Hendelse> ledigehendelser;
 
+    /**
+     * Oppretter 3 lister. Allerom, alle ledigerom og alle ledigehendelser.
+     */
     public ReaderHjelp() {
         allerom = new ArrayList<>();
         ledigerom = new ArrayList<>();
@@ -17,7 +20,8 @@ public class ReaderHjelp {
 
     /**
      * Setter opp data fra csv fil.
-     * @param felt
+     * Lager en liste med alle rommene fra csv filen.
+     * @param felt Datafelt fra csv fil.
      */
     public void setOppData(String[] felt) {
         String dato = felt[0];

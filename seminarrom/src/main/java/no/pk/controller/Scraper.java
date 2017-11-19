@@ -1,14 +1,17 @@
 package no.pk.controller;
 import no.pk.controller.attributter.Lenker;
+import no.pk.model.Rom;
+import no.pk.util.ReaderHjelp;
 import no.pk.util.RomUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+
+import java.util.ArrayList;
 import static no.pk.model.Mail.TILMAIL;
 import static no.pk.util.MailUtil.setUpMail;
-import static no.pk.util.RomUtil.LedigNaa;
 
 public class Scraper {
     private static final String SUBJECT_LEDIGE_ROM = "Ledige rom: ";
@@ -33,14 +36,14 @@ public class Scraper {
     private static WebDriver setUpDriver() {
         System.setProperty("webdriver.chrome.driver", DRIVER_LOKAL);
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless");
+        //chromeOptions.addArguments("--headless");
         return new ChromeDriver(chromeOptions);
     }
     //TODO
-    public void sendSMSogMail() {
-        String msg = RomUtil.lagMsg();
+    public void sendSMSogMail(ArrayList<Rom> allerom) {
+        /*String msg = ReaderHjelp.lagMsg();
         setUpMail(TILMAIL, msg, SUBJECT_LEDIGE_ROM);
-        TwilioSMS.SendSMS(LedigNaa());
+        TwilioSMS.SendSMS(LedigNaa());*/
     }
 
     public WebDriver getDriver() {
