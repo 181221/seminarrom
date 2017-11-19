@@ -7,6 +7,7 @@ import no.pk.bot.models.Event;
 import no.pk.bot.models.Message;
 import no.pk.controller.Scraper;
 import no.pk.controller.attributter.Lenker;
+import no.pk.controller.scraper.App;
 import no.pk.model.Rom;
 import no.pk.util.RomUtil;
 import org.openqa.selenium.WebDriver;
@@ -123,34 +124,12 @@ public class SlackBot extends Bot {
     public void finnDag(WebSocketSession session, Event event) throws IOException {
         if (event.getText().contains("idag")) {
             reply(session, event, new Message("Bare ett øyeblikk så skal jeg sjekke!"));
-            finnLedigeSeminarRom(session, event);
+            String melding = App.hentDagensSeminarogAuditorieRom();
+            App.sendViaPushbullet(melding);
+            reply(session, event, new Message(melding));
         } else {
             reply(session, event, new Message("Beklager, @Peder har ikke implementert søk for andre dager enda.."));
         }
         stopConversation(event);
     }
-
-    private void finnLedigeSeminarRom(WebSocketSession session, Event event) throws IOException {
-        Scraper scraper = new Scraper();
-        scraper.loggInnFeide();
-        WebDriver driver = scraper.getDriver();
-        driver.navigate().to(Lenker.ALLESEMINAR);
-        ArrayList<Rom> allerom = null;
-        int teller = 0;
-        int max = 10;
-        while (true) {
-            try {
-                allerom = readCSVInternett(Lenker.ALLESEMINAR).getAllerom();
-                break;
-            } catch (IOException e) {
-                if (++teller == max) throw e;
-            } finally {
-                scraper.avsluttDriver();
-            }
-        }
-        // Skriv melding
-        /*String msg = RomUtil.lagMsg(allerom);
-        reply(session, event, new Message(RomUtil.LedigNaa()));*/
-    }
-
 }
