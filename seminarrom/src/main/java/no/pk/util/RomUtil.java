@@ -13,18 +13,21 @@ public class RomUtil {
     public static ArrayList<String> ledigerom = new ArrayList<>();
     public static ArrayList<Hendelse> ledigehendelser = new ArrayList<>();
 
+    /**
+     * Returnerer et rom som er ledig basert på klokken.
+     * @return Rom med slutt tid.
+     */
     public static String LedigNaa() {
         int naa = hentTime();
         boolean funnet = false;
         String rommet = "Ingen ledige nå";
         for (int i = 0; i < ledigehendelser.size() - 1 && !funnet; i++) {
             Hendelse h = ledigehendelser.get(i);
-            int timen = Integer.parseInt(h.getSlutt().toString().substring(0, 2));
-            if (naa == timen) {
-                rommet = "ledig nå: " + h.getRom();
-                funnet = true;
-            } else if ((timen - naa) == 1) {
-                rommet = h.getRom() + " ledig fra: " + " " + h.getSlutt() + " Til: " + ledigehendelser.get(i + 1).getSlutt();
+            Hendelse h1 = ledigehendelser.get(i+1);
+            int start = Integer.parseInt(h.getStart().toString().substring(0, 2));
+            int slutt = Integer.parseInt(h1.getSlutt().toString().substring(0, 2));
+            if(naa >= start  && naa <= slutt ) {
+                rommet = "Rom " + h.getRom() + " er ledig til " + slutt;
                 funnet = true;
             }
         }
