@@ -42,11 +42,11 @@ public class SlackWebhooks {
     @PostConstruct
     public void invokeSlackWebhook() {
         RestTemplate restTemplate = new RestTemplate();
-        RichMessage richMessage = new RichMessage("Just to test Slack's incoming webhooks.");
+        RichMessage richMessage = new RichMessage("Webhook test:");
         // set attachments
         Attachment[] attachments = new Attachment[1];
         attachments[0] = new Attachment();
-        attachments[0].setText("Some data relevant to your users.");
+        attachments[0].setText("Denne teksten blir sendt når Slack webhook blir invoked.");
         richMessage.setAttachments(attachments);
 
         // For debugging purpose only
