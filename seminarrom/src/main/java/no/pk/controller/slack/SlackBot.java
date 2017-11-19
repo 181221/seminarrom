@@ -119,18 +119,18 @@ public class SlackBot extends Bot {
      */
     @Controller(pattern = "(finn seminar)", next = "finnDag")
     public void settOppLedigeSeminarRom(WebSocketSession session, Event event) {
-        startConversation(event, "finnLedigeSeminarRom");
+        startConversation(event, "finnDag");
         reply(session, event, new Message("Hallaien, hvilken dag ønsker du å finne ledig rom på?"));
     }
 
     @Controller(next = "finnLedigeSeminarRom")
     public void finnDag(WebSocketSession session, Event event) {
-        if (event.getText().equals("idag")) {
-            reply(session, event, new Message("Bare ett øyeblikk så skal jeg sjekke!"));
+        if (event.getText().contains("idag")) {
             nextConversation(event);
+            reply(session, event, new Message("Bare ett øyeblikk så skal jeg sjekke!"));
         } else {
-            reply(session, event, new Message("Beklager, @Peder har ikke implementert søk for andre dager enda.."));
             stopConversation(event);
+            reply(session, event, new Message("Beklager, @Peder har ikke implementert søk for andre dager enda.."));
         }
     }
 
@@ -160,12 +160,5 @@ public class SlackBot extends Bot {
         String msg = RomUtil.lagMsg();
         reply(session, event, new Message(RomUtil.LedigNaa()));
         stopConversation(event);
-    }
-
-    private static WebDriver setUpDriver() {
-        System.setProperty("webdriver.chrome.driver", DRIVER_LOKAL);
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless --whitelisted-ips=\"\"");
-        return new ChromeDriver(chromeOptions);
     }
 }
